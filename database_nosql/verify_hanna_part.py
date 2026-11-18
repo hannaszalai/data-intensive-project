@@ -267,3 +267,11 @@ def main() -> None:
     print("\n" + "=" * 60)
     print("All tests completed.")
     print("=" * 60)
+
+
+if __name__ == "__main__":
+    main()
+
+
+if __name__ == "__main__":
+    main()

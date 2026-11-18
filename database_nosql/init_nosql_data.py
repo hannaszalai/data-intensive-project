@@ -159,3 +159,11 @@ def main() -> None:
     init_kafka(data)
 
     print("\nDone. All NoSQL mock data initialized successfully from JSON.")
+
+
+if __name__ == "__main__":
+    main()
+
+
+if __name__ == "__main__":
+    main()
