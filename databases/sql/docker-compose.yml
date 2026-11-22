@@ -1,0 +1,27 @@
+services: 
+  # ---------------------------------------------------------------------------
+  # PostgreSQL (relational database)
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: foodgo_user
+      POSTGRES_PASSWORD: foodgo_password
+      POSTGRES_DB: foodgo_sql
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - foodgo-network
+    restart: unless-stopped
+  
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  foodgo-network:
+    driver: bridge

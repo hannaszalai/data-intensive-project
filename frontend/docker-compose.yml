@@ -1,0 +1,18 @@
+services:
+  # ---------------------------------------------------------------------------
+  # Frontend (Static HTML/CSS/JS through Nginx)
+  # ---------------------------------------------------------------------------
+  frontend:
+    image: nginx:alpine
+    container_name: foodgo-frontend
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/usr/share/nginx/html:ro
+    networks:
+      - foodgo-network
+    restart: unless-stopped
+
+networks:
+  foodgo-network:
+    driver: bridge
