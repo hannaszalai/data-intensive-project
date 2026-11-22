@@ -1,7 +1,7 @@
 import os
 import time
 import json
-from pymongo import MongoClient, ReadPreference
+from pymongo import MongoClient
 import redis
 from kafka import KafkaProducer, KafkaConsumer
 
