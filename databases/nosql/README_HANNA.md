@@ -25,7 +25,7 @@ The NoSQL layer is built around three systems, each serving a distinct role:
 
 ```bash
 cd <project-root>
-docker compose up -d
+docker compose up -d --build
 ```
 
 Wait about 15-20 seconds for MongoDB replica set initialization to complete (the `mongo-init` container handles this automatically).
@@ -45,7 +45,7 @@ pip install -r requirements.txt
 ### Step 3 - Initialize mock data
 
 ```bash
-python database_nosql/init_nosql_data.py
+python -m databases.nosql.init_nosql_data
 ```
 
 This script loads all entities directly from `database_nosql/mock_data.json` and:
@@ -59,7 +59,7 @@ This script loads all entities directly from `database_nosql/mock_data.json` and
 ### Step 4 - Run the verification script
 
 ```bash
-python database_nosql/verify_hanna_part.py
+python databases/nosql/test/verify_hanna_part.py
 ```
 
 This runs 5 tests and prints clear output demonstrating:

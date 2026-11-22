@@ -1,0 +1,31 @@
+services:
+  # ---------------------------------------------------------------------------
+  # Python Backend (API)
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: foodgo-backend
+    ports:
+      - "8000:8000"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: foodgo_sql
+      POSTGRES_USER: foodgo_user
+      POSTGRES_PASSWORD: foodgo_password
+      MONGO_URI: mongodb://mongo-primary:27017,mongo-secondary:27017/?replicaSet=rs0
+      MONGO_PRIMARY_URI: mongodb://mongo-primary:27017/?directConnection=true
+      MONGO_SECONDARY_URI: mongodb://mongo-secondary:27017/?directConnection=true
+      INIT_DB_ON_STARTUP: "True"
+      REDIS_HOST: redis-cache
+      REDIS_PORT: 6379
+      KAFKA_BROKER: kafka:29092
+    networks:
+      - foodgo-network
+    restart: unless-stopped
+
+networks:
+  foodgo-network:
+    driver: bridge
