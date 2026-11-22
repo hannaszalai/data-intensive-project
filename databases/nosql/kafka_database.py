@@ -10,7 +10,7 @@ from kafka.admin import KafkaAdminClient, NewTopic
 # Configuration
 # ---------------------------------------------------------------------------
 
-KAFKA_BOOTSTRAP = "localhost:9092"
+KAFKA_BOOTSTRAP = os.getenv("KAFKA_BROKER", "localhost:9092")
 DB_NAME = "foodgo_nosql"
 CACHE_TTL = 300  # seconds
 

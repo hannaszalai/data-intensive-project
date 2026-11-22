@@ -1,16 +1,24 @@
+import os
+
 from pymongo import MongoClient
 import datetime
 import json
 
-import redis
-import serialization
+import databases.nosql.redis_database as redis_db
+import databases.nosql.serialization as serialization
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
-MONGO_PRIMARY_URI = "mongodb://localhost:27017/?directConnection=true"
-MONGO_SECONDARY_URI = "mongodb://localhost:27018/?directConnection=true&readPreference=secondaryPreferred"
+MONGO_PRIMARY_URI = os.getenv(
+    "MONGO_PRIMARY_URI", 
+    "mongodb://localhost:27017/?directConnection=true"
+)
+MONGO_SECONDARY_URI = os.getenv(
+    "MONGO_SECONDARY_URI", 
+    "mongodb://localhost:27018/?directConnection=true"
+)
 DB_NAME = "foodgo_nosql"
 CACHE_TTL = 300  # seconds
 
@@ -65,7 +73,7 @@ def _get_mongo_client(use_replica: bool = False):
 # ---------------------------------------------------------------------------
 
 def get_restaurants_by_region(region_id: str, use_replica: bool = True) -> list:
-    r = redis._get_redis()
+    r = redis_db._get_redis()
     cache_key = f"cache:region:{region_id}"
 
     cached = r.get(cache_key)
@@ -87,7 +95,7 @@ def get_restaurants_by_region(region_id: str, use_replica: bool = True) -> list:
 
 
 def get_restaurant_menu(restaurant_id: str, region_id: str) -> dict:
-    r = redis._get_redis()
+    r = redis_db._get_redis()
     cache_key = f"cache:menu:{region_id}:{restaurant_id}"
 
     cached = r.get(cache_key)
@@ -140,7 +148,7 @@ def update_menu_item_optimistic(
         return False
 
     # Invalidate cache
-    r = redis._get_redis()
+    r = redis_db._get_redis()
     r.delete(f"cache:menu:{region_id}:{restaurant_id}")
     r.delete(f"cache:region:{region_id}")
     return True
@@ -162,7 +170,7 @@ def add_menu_item(restaurant_id: str, region_id: str, new_item: dict) -> bool:
         return False
 
     # Invalidate cache
-    r = redis._get_redis()
+    r = redis_db._get_redis()
     r.delete(f"cache:menu:{region_id}:{restaurant_id}")
     r.delete(f"cache:region:{region_id}")
     return True
