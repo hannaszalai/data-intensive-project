@@ -1,0 +1,16 @@
+# Environment variables and passwords
+.env
+.env.*
+!.env.example
+
+# Database backups
+backups/
+*.dump
+*.backup
+
+# Python temporary files
+__pycache__/
+*.pyc
+
+# Local configuration
+.vscode/
