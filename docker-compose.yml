@@ -131,6 +131,50 @@ services:
       - foodgo-network
     restart: unless-stopped
 
+  # PostgreSQL Primary Database
+  postgres-primary:
+    image: postgres:17
+    container_name: postgres-primary
+    hostname: postgres-primary
+    environment:
+      POSTGRES_DB: foodgo
+      POSTGRES_USER: foodgo_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - postgres-primary-data:/var/lib/postgresql/data
+      - ./database_sql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - foodgo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U foodgo_user -d foodgo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+  
+  # PostgreSQL read-only replica
+  postgres-standby:
+    image: postgres:17
+    container_name: postgres-standby
+    hostname: postgres-standby
+    environment:
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Set REPLICATION_PASSWORD}
+    ports:
+      - "127.0.0.1:5434:5432"
+    volumes:
+      - postgres-standby-data:/var/lib/postgresql/data
+      - ./database_sql/bootstrap_standby.sh:/scripts/bootstrap_standby.sh:ro
+    networks:
+      - foodgo-network
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    restart: unless-stopped
+
 # ---------------------------------------------------------------------------
 # Networks
 # ---------------------------------------------------------------------------
@@ -149,4 +193,8 @@ volumes:
   redis-data:
     driver: local
   kafka-data:
+    driver: local
+  postgres-primary-data:
+    driver: local
+  postgres-standby-data:
     driver: local
