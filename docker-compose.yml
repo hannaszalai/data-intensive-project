@@ -144,6 +144,7 @@ services:
       - "127.0.0.1:5433:5432"
     volumes:
       - postgres-primary-data:/var/lib/postgresql/data
+      - ./database_sql/init:/docker-entrypoint-initdb.d:ro
     networks:
       - foodgo-network
     healthcheck:
